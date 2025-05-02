@@ -12,7 +12,7 @@ public class MyGraphApp {
     public MyGraphApp() {
         directedGraph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
     }
-    public void parseGraph(String filepath) {
+ public void parseGraph(String filepath) {
        
         StringBuilder contentBuilder = new StringBuilder();
 
@@ -35,39 +35,49 @@ public class MyGraphApp {
             map.put(p.getSecond(), a);
         });
         dotImporter.importGraph(directedGraph, new StringReader(contentBuilder.toString()));
-
+       
+    }
+    
+    @Override
+    public String toString() {
+       
+        StringBuilder graphBuilder = new StringBuilder();
+        
+        String currentLine = "";
+        
         // Printing the Number of Nodes
-        System.out.println("Number of Nodes: " + directedGraph.vertexSet().size());
+        currentLine = "Number of Nodes: " + directedGraph.vertexSet().size() + "\n";
+        graphBuilder.append(currentLine);
+    
+        // Printing each Nodes Label
         for(String v : directedGraph.vertexSet() ) {
-            System.out.println("\tLabel of Node : " + v);
+            currentLine = "\tLabel of Node : " + v + "\n";
+            graphBuilder.append(currentLine);
         }
+        
         // Printing the Number of Edges 
-        System.out.println("Number of Edges: " + directedGraph.edgeSet().size());
-        //for(String v : directedGraph.vertexSet() ) {
-        //    System.out.println("\tNodes: Label of Node : " + v);
-        //}
+        currentLine = "Number of Edges: " + directedGraph.edgeSet().size() + "\n";
+        graphBuilder.append(currentLine);
+        
+        // Printing the Each Edge and Direction
         for(DefaultEdge e : directedGraph.edgeSet() ) {
             String source = directedGraph.getEdgeSource(e);
             String target = directedGraph.getEdgeTarget(e);
-            System.out.println("\tEdge : " + source + " -> " + target);
+            currentLine = "\tEdge : " + source + " -> " + target + "\n";
+            graphBuilder.append(currentLine);
         }
-        
-    }
-
-    public String toString() {
-        return directedGraph.toString();
+        return  graphBuilder.toString(); 
     }
 
     public void outputGraph(String filepath) {
-        DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>();
-        exporter.setVertexAttributeProvider((v) -> {
-            Map<String, Attribute> map = new LinkedHashMap<>();
-            map.put("label", DefaultAttribute.createAttribute(v.toString()));
-            return map;
-        });
+        Writer writer = null;
         try {
-            exporter.exportGraph(directedGraph, new FileWriter(filepath));
-        }catch (IOException e){
+            writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(filepath)));
+            writer.write(toString());
+        } catch (IOException ex) {
+            // Report
+        } finally {
+           try {writer.close();} catch (Exception ex) {/*ignore*/}
         }
     }
 }
