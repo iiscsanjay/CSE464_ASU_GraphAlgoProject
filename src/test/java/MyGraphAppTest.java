@@ -31,6 +31,16 @@ public class MyGraphAppTest {
     }
 
     @Test
+    public void testAddNodePositiveCase() throws IOException{
+        String inputFile = "input.dot";
+        boolean expected = true;
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean result = mg.addNode("i");
+        assertEquals(expected, result);
+    }
+    
+    @Test
     public void testAddNodeNegativeCase() throws IOException{
         String inputFile = "input.dot";
         boolean expected = false;
@@ -40,15 +50,6 @@ public class MyGraphAppTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    public void testAddNodePositiveCase() throws IOException{
-        String inputFile = "input.dot";
-        boolean expected = true;
-        MyGraphApp mg = new MyGraphApp();
-        mg.parseGraph(inputFile);
-        boolean result = mg.addNode("i");
-        assertEquals(expected, result);
-    }
 
     @Test
     public void testAddNodes() throws IOException{
@@ -57,6 +58,7 @@ public class MyGraphAppTest {
         String outputFile = "output2.txt";
         String expectedFile = "expected2.txt";
         MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
         mg.addNodes(nodes);
         mg.outputGraph(outputFile);
         String output = mg.toString();

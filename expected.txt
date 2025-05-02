@@ -1,0 +1,19 @@
+Number of Nodes: 8
+	Label of Node : a
+	Label of Node : b
+	Label of Node : c
+	Label of Node : d
+	Label of Node : e
+	Label of Node : f
+	Label of Node : g
+	Label of Node : h
+Number of Edges: 9
+	Edge : a -> b
+	Edge : b -> c
+	Edge : c -> d
+	Edge : d -> a
+	Edge : a -> e
+	Edge : e -> f
+	Edge : e -> g
+	Edge : f -> h
+	Edge : g -> h
