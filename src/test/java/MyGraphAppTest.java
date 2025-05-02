@@ -178,5 +178,29 @@ public class MyGraphAppTest {
         boolean result = mg.removeEdge(srcLabel,dstLabel);
         assertEquals(expected, result);
     }
+    
+    @Test
+    public void testGraphSearchPositiveCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "a";
+        String dstLabel = "h";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        String expectedPath = "Path: a->e->f->h";
+        Path p = mg.GraphSearch(srcLabel,dstLabel);
+        String resultPath =  p.getPath();
+        assertEquals(expectedPath, resultPath);
+    }
+
+    @Test
+    public void testGraphSearchNegativeCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "g";
+        String dstLabel = "e";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        Path p = mg.GraphSearch(srcLabel,dstLabel);
+        assertEquals(p,null);
+    }
 
 }

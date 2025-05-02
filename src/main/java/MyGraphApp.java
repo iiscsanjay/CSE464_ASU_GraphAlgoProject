@@ -170,5 +170,65 @@ public class MyGraphApp {
         return status;
     }
 
+    public Path GraphSearch(String srcLabel, String dstLabel) {
+        
+        Path p = null;
+
+        boolean status1 = directedGraph.containsVertex(srcLabel);
+        boolean status2 = directedGraph.containsVertex(dstLabel);
+        
+        // If both source and destination node is found in graph, then go for BFS search
+        if (status1 == true & status2 == true) {
+
+            // declaring the visited nodes
+            Set<String> visited = new HashSet<>();
+
+            // declaring the queue to hold unexplored nodes
+            Queue<String> queue = new LinkedList<>();
+
+            // declaring the map/dict to hold the parent -> connecting path
+            HashMap<String, String> parent = new HashMap<>();
+
+            // Initializing the queue, visited nodes and parents dictionary for path
+            queue.add(srcLabel);
+            visited.add(srcLabel);
+            parent.put(srcLabel,null);
+
+            //Running the loop until queue becomes empty
+            while (!queue.isEmpty()) {
+
+                // removing the front element
+                String currentNode = queue.remove();
+                
+                //System.out.println("Exploring Node: " + currentNode);
+                
+                if (currentNode.equals(dstLabel)) {
+                    p = new Path();
+                    while (currentNode != null) {
+                        p.addNode(currentNode);
+                        currentNode = parent.get(currentNode);
+                    }
+                    return p;
+                }
+
+                for(DefaultEdge e : directedGraph.edgeSet() ) {
+                    String source = directedGraph.getEdgeSource(e);
+                    String neighbor  = directedGraph.getEdgeTarget(e);
+                    if (source.equals(currentNode)) {
+                        //System.out.println(source + "->" + neighbor + "=>" +  currentNode);
+                        if (! visited.contains(neighbor)) {
+                            visited.add(neighbor);
+                            queue.add(neighbor);
+                            parent.put(neighbor, currentNode);
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            System.out.println("Not Found");
+        }
+        return p;
+    }
 
 }
