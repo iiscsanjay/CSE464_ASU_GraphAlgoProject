@@ -4,9 +4,10 @@ import java.nio.file.Paths;
 import org.junit.Test;
 import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MyGraphAppTest {
-   
+
     public static String readFileAsString(String filePath) throws IOException {
         try {
             return new String(Files.readAllBytes(Paths.get(filePath)));
@@ -15,12 +16,12 @@ public class MyGraphAppTest {
         }
         return "";
     }
-    
+
     @Test
     public void testFeature1Parse() throws IOException{
         String inputFile = "input.dot";
-        String outputFile = "output1.txt";
-        String expectedFile = "expected1.txt";
+        String outputFile = "output.txt";
+        String expectedFile = "expected.txt";
         MyGraphApp mg = new MyGraphApp();
         mg.parseGraph(inputFile);
         String output = mg.toString();
@@ -38,7 +39,7 @@ public class MyGraphAppTest {
         boolean result = mg.addNode("a");
         assertEquals(expected, result);
     }
-    
+
     @Test
     public void testAddNodePositiveCase() throws IOException{
         String inputFile = "input.dot";
@@ -52,18 +53,16 @@ public class MyGraphAppTest {
     @Test
     public void testAddNodes() throws IOException{
         String inputFile = "input.dot";
+        String [] nodes = { "i","j","k"};
         String outputFile = "output2.txt";
         String expectedFile = "expected2.txt";
-        String [] nodes = { "i","j","k"};
         MyGraphApp mg = new MyGraphApp();
-        mg.parseGraph(inputFile);
         mg.addNodes(nodes);
         mg.outputGraph(outputFile);
         String output = mg.toString();
         String expected = readFileAsString(expectedFile);
         assertEquals(expected, output);
     }
-
 
     @Test
     public void testAddEdgeNegativeCase() throws IOException{
@@ -84,7 +83,7 @@ public class MyGraphAppTest {
         boolean result = mg.addEdge("c", "e");
         assertEquals(expected, result);
     }
-    
+
     @Test
     public void testOutputDotGraph() throws IOException{
         String inputFile = "input.dot";
@@ -105,5 +104,79 @@ public class MyGraphAppTest {
         MyGraphApp mg = new MyGraphApp();
         mg.parseGraph(inputFile);
         mg.outputGraphics(path, format);
+        assertNotNull(path +"." + format);
     }
+
+    @Test
+    public void testRemoveNodePositiveCase() throws IOException {
+        String inputFile = "input.dot";
+        String label = "a";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean expected = true;
+        boolean result = mg.removeNode(label);
+        assertEquals(expected, result);
+
+    }
+
+    @Test
+    public void testRemoveNodeNegativeCase() throws IOException {
+        //String [] nodes = { "i","j","k"};
+        String inputFile = "input.dot";
+        String label = "i";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean expected = false;
+        boolean result = mg.removeNode(label);
+        assertEquals(expected, result);
+
+    }
+
+    @Test
+    public void testRemoveNodesPositiveCase() throws IOException {
+        String inputFile = "input.dot";
+        String [] label = {"a", "b", "c" };
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean expected = true;
+        boolean result = mg.removeNodes(label);
+        assertEquals(expected, result);
+
+    }
+
+    @Test
+    public void testRemoveNodesNegativeCase() throws IOException {
+        String inputFile = "input.dot";
+        String [] label = {"a", "b", "i" };
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean expected = false;
+        boolean result = mg.removeNodes(label);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testRemoveEdgePositiveCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "b";
+        String dstLabel = "c";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean expected = true;
+        boolean result = mg.removeEdge(srcLabel,dstLabel);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testRemoveEdgeNegativeCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "c";
+        String dstLabel = "b";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean expected = false;
+        boolean result = mg.removeEdge(srcLabel,dstLabel);
+        assertEquals(expected, result);
+    }
+
 }

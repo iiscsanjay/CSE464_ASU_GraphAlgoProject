@@ -15,7 +15,6 @@ public class MyGraphApp {
     }
     
     // Feature 1 : parseGraph, toString, outputGraph
-    
     public void parseGraph(String filepath) {
     
         // Read the input dot file as string 
@@ -141,4 +140,35 @@ public class MyGraphApp {
         }catch (IOException e){
         }
     }
+
+
+    public boolean removeNode(String label) {
+        boolean status = directedGraph.removeVertex(label);
+        return status;
+    }
+
+    public boolean removeNodes(String [] label) {
+        boolean result = true;
+        for(String nv : label ){
+            boolean status = removeNode(nv);
+            result = result & status;
+            if (!status) {
+                System.out.println("Label " + nv + " doesn't exist in Graph");
+            }
+        }
+        return result;
+    }
+
+    public boolean removeEdge(String srcLabel, String dstLabel) {
+        boolean status = directedGraph.containsEdge(srcLabel, dstLabel);
+        if (status) {
+            directedGraph.removeEdge(srcLabel, dstLabel);
+        }
+        else {
+                System.out.println("Edge from " + srcLabel + " -> " + dstLabel + " doesn't exist in Graph");
+        }
+        return status;
+    }
+
+
 }
