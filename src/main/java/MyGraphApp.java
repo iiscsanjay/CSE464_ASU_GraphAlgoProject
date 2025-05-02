@@ -147,16 +147,21 @@ public class MyGraphApp {
         
         boolean status1 = graph.containNode(srcLabel);
         boolean status2 = graph.containNode(dstLabel);
+        
+        // initializing the template typei with bfs
+        SearchTemplate stype = new BFSTemplate();
+
         // If both source and destination node is found in graph,
         if (status1 == true & status2 == true) {
 
             // check the path by BFS
             if (algo == Algorithm.BFS ) {
-                return bfsSearch(srcLabel, dstLabel);
+                return stype.searchPath(graph, srcLabel, dstLabel);
             }
             // check the path by DFS
             else if (algo == Algorithm.DFS ) {
-                return dfsSearch(srcLabel, dstLabel);
+                stype = new DFSTemplate(); 
+                return stype.searchPath(graph, srcLabel, dstLabel);
             }
             else {
                 return null;
@@ -164,120 +169,5 @@ public class MyGraphApp {
         }
         return null;
     }
-
-    
-    /**
-     * bfsSearch method : it search for the path from srcLabel 
-     * to dstLabel by following the breadth for search algorithm 
-     */
-    public Path bfsSearch(String srcLabel, String dstLabel) {
-        
-        // declaring path p as null
-        Path p =  null;
-
-        // declaring the visited nodes
-        Set<String> visited = new HashSet<>();
-
-        // declaring the map/dict to hold the parent -> connecting path
-        HashMap<String, String> parent = new HashMap<>();
-
-        // declaring the queue to hold unexplored nodes
-        Queue<String> queue = new LinkedList<>();
-
-        // Initializing the queue, visited nodes and parents dictionary for path
-        queue.add(srcLabel);
-        parent.put(srcLabel,null);
-        visited.add(srcLabel);
-
-        //Running the loop until queue becomes empty
-        while (!queue.isEmpty()) {
-
-            // removing the front element
-            String currentNode = queue.remove();
-
-            //System.out.println("Exploring Node: " + currentNode);
-
-            // Checks if currentNode is the destination node
-            if (currentNode.equals(dstLabel)) {
-                p = new Path();
-                while (currentNode != null) {
-                    p.addNode(currentNode);
-                    currentNode = parent.get(currentNode);
-                }
-                //System.out.println(p.getPath());
-                return p;
-            }
-
-            for(DefaultEdge e : graph.getEdgeSet() ) {
-                String source = graph.getEdgeSource(e);
-                String neighbor  = graph.getEdgeTarget(e);
-                if (source.equals(currentNode)) {
-                    // System.out.println(source + "=>" + neighbor);
-                    if (! visited.contains(neighbor)) {
-                        visited.add(neighbor);
-                        queue.add(neighbor);
-                        parent.put(neighbor, currentNode);
-                    }
-                }
-            }
-        }
-        return p;
-    }
-   
-    /**
-     * dfsSearch method : it search for the path from srcLabel 
-     * to dstLabel by following the depth for search algorithm 
-     */
-    public Path dfsSearch(String srcLabel, String dstLabel) {
-        
-        // declaring path p as null
-        Path p =  null;
-        
-        // declaring the visited nodes
-        Set<String> visited = new HashSet<>();
-
-        // declaring the map/dict to hold the parent -> connecting path
-        HashMap<String, String> parent = new HashMap<>();
-        
-        // declaring the stack to hold unexplored nodes
-        Stack<String> stack = new Stack<>();
-
-        // Initializing the stack, visited nodes and parents dictionary for path
-        stack.push(srcLabel);
-        parent.put(srcLabel,null);
-
-        //Running the loop until stack becomes empty
-        while (!stack.isEmpty()) {
-
-            // removing the top element
-            String currentNode = stack.pop();
-
-            visited.add(currentNode);
-
-            // Checks if currentNode is the destination node
-            //System.out.println("Exploring Node: " + currentNode);
-            if (currentNode.equals(dstLabel)) {
-                p = new Path();
-                while (currentNode != null) {
-                    p.addNode(currentNode);
-                    currentNode = parent.get(currentNode);
-                }
-                return p;
-            }
-
-            for(DefaultEdge e : graph.getEdgeSet() ) {
-                String source = graph.getEdgeSource(e);
-                String neighbor  = graph.getEdgeTarget(e);
-                if (source.equals(currentNode)) {
-                    //System.out.println(source + "=>" + neighbor );
-                    if (! visited.contains(neighbor)) {
-                        stack.push(neighbor);
-                        parent.put(neighbor, currentNode);
-                    }
-                }
-            }
-        }
-        return p;
-    }
-   
 }
+    
