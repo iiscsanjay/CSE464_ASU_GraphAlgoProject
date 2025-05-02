@@ -171,4 +171,62 @@ public class MyGraphApp {
     }
 
 
+    public Path GraphSearch(String srcLabel, String dstLabel) {
+        Path p = null;
+        boolean status1 = directedGraph.containsVertex(srcLabel);
+        boolean status2 = directedGraph.containsVertex(dstLabel);
+
+        // If both source and destination node is found in graph, then go for DFS search
+        if (status1 == true & status2 == true) {
+
+            // declaring the visited nodes
+            Set<String> visited = new HashSet<>();
+
+            // declaring the stack to hold unexplored nodes
+            Stack<String> stack = new Stack<>();
+
+            // declaring the map/dict to hold the parent -> connecting path
+            HashMap<String, String> parent = new HashMap<>();
+
+            // Initializing the stack, visited nodes and parents dictionary for path
+            stack.push(srcLabel);
+            parent.put(srcLabel,null);
+
+            //Running the loop until stack becomes empty
+            while (!stack.isEmpty()) {
+
+                // removing the top element
+                String currentNode = stack.pop();
+
+                visited.add(currentNode);
+
+                //System.out.println("Exploring Node: " + currentNode);
+                if (currentNode.equals(dstLabel)) {
+                    p = new Path();
+                    while (currentNode != null) {
+                        p.addNode(currentNode);
+                        currentNode = parent.get(currentNode);
+                    }
+                    break;
+                }
+
+                for(DefaultEdge e : directedGraph.edgeSet() ) {
+                    String source = directedGraph.getEdgeSource(e);
+                    String neighbor  = directedGraph.getEdgeTarget(e);
+                    if (source.equals(currentNode)) {
+                        //System.out.println(source + "=>" + neighbor );
+                        if (! visited.contains(neighbor)) {
+                            stack.push(neighbor);
+                            parent.put(neighbor, currentNode);
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            System.out.println("Not Found");
+        }
+        return p;
+    }
+
 }
