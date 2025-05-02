@@ -20,6 +20,9 @@ public class MyGraphApp {
     // Graph object to store and process the graph
     private Graph<String, DefaultEdge> directedGraph;
 
+    // MyGraphIO object to handles read and writes into files
+    private MyGraphIO mio = null;
+    
 
     /*
      * Algorithm enum variable for selecting the algorithm
@@ -29,24 +32,25 @@ public class MyGraphApp {
         DFS,
         RWS
     }
-
+    
     /**
      * Default Constructor to initialize the directedGraph object
      */
     public MyGraphApp() {
         directedGraph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+        mio = new MyGraphIO();
     }
 
-
-    /**
+    
+    /** 
      * addNode method: adds the node label into the graph vertex and return the status
      */
     public boolean addNode(String label) {
         boolean status = directedGraph.addVertex(label);
         return status;
     }
-
-
+    
+    
     /**
      * addNodes method: adds the nodes from array into the graph vertexes and return the status
      */
@@ -61,10 +65,10 @@ public class MyGraphApp {
         }
         return result;
     }
-
-
+    
+    
     /**
-     * addEdge method: adds the edge from srcLabel to dstLabel into the graph if both the labels exists in the graph, else return false
+     * addEdge method: adds the edge from srcLabel to dstLabel into the graph if both the labels exists in the graph, else return false 
      */
     public boolean addEdge(String srcLabel, String dstLabel) {
         boolean status = false;
@@ -151,89 +155,77 @@ public class MyGraphApp {
         }
         return  graphBuilder.toString();
     }
-
-    // Feature 1 : parseGraph, toString, outputGraph
+    
+    
+    /**
+     * parseGraph method: calls the readGraph method from 
+     * MyGraphIO which reads dot file and update the graph 
+     */
     public void parseGraph(String filepath) {
-
-        // Read the input dot file as string
-        StringBuilder contentBuilder = new StringBuilder();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null)
-            {
-                contentBuilder.append(sCurrentLine).append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Generate the DOTImporter object
-        DOTImporter<String, DefaultEdge> dotImporter = new DOTImporter<>();
-        dotImporter.setVertexFactory(label -> label);
-
-        Map<String, Map<String, Attribute>> attrs = new HashMap<>();
-        dotImporter.addVertexAttributeConsumer((p, a) -> {
-            Map<String, Attribute> map = attrs.computeIfAbsent(p.getFirst(), k -> new HashMap<>());
-            map.put(p.getSecond(), a);
-        });
-
-        // update the directedGraph by using the dot file string read in contentBuilder
-        dotImporter.importGraph(directedGraph, new StringReader(contentBuilder.toString()));
-
+        mio.readGraph(directedGraph, filepath);
     }
 
-
+    
     /**
-     * outputGraph method: It writes the Graph details into the file given by filepath
+     * outputGraph method: calls the writeGraph from MyGraphIO 
+     * which writes the Graph details into the file given by 
+     * filepath
      */
     public void outputGraph(String filepath) {
-        Writer writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream(filepath)));
-            writer.write(toString());
-        } catch (IOException ex) {
-            // Report
-        } finally {
-           try {writer.close();} catch (Exception ex) {/*ignore*/}
-        }
+        mio.writeGraph(directedGraph, filepath);
     }
 
+    
     /**
-     * outputDOTGraph method: generates the graphics into dot file on the given path from the graph
+     * outputDOTGraph method: calls the writeDotGraph from 
+     * MyGraphIO class which reads the Graph details and write 
+     * the dot file given by filepath
      */
     public void outputDOTGraph(String path) throws IOException{
-
-        // Initialize the DOTExporter object
-        DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>(v -> v.toString());
-
-        try {
-            exporter.exportGraph(directedGraph, new FileWriter(path));
-        }catch (IOException e){
-
-        }
+        mio.writeDotGraph(directedGraph, path);
     }
+   
 
     /**
-     * outputGraphics method: returns generates the graph into dot file by calling outputDOTGraph method
-     * and then run the dot executable to generate the png file
+     * outputGraphics method: calls the generateGraphics method 
+     * of MyGraphIO class which reads the graph and generate the 
+     * dot file from it and call the dot executable to generate 
+     * the graphics by given format and write into given 
+     * filepath.
      */
     public void outputGraphics(String path, String format ) throws IOException {
-        String inputFile = "output.dot";
-        outputDOTGraph(inputFile);
-        String outputFile = path +"." +  format;
-        try {
-            ProcessBuilder pb = new ProcessBuilder("dot", "-Tpng", inputFile, "-o" , outputFile);
-            Process p = pb.start();
-        }catch (IOException e){
-        }
+        mio.writeImageFile(directedGraph, path, format);
     }
     
     /**
-     * bfsSearch method: returns the path for bfs
+     * GraphSearch method : returns the path between the srcLabel to dstLabel via given algorithm """
+     */
+    public Path GraphSearch(String srcLabel, String dstLabel, Algorithm algo) {
+        boolean status1 = directedGraph.containsVertex(srcLabel);
+        boolean status2 = directedGraph.containsVertex(dstLabel);
+        // If both source and destination node is found in graph,
+        if (status1 == true & status2 == true) {
+            // check the path by BFS
+            if (algo == Algorithm.BFS ) {
+                return bfsSearch(srcLabel, dstLabel);
+            }
+            // check the path by DFS
+            else if (algo == Algorithm.DFS ) {
+                return dfsSearch(srcLabel, dstLabel);
+            }
+            else {
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * bfsSearch method : it search for the path from srcLabel 
+     * to dstLabel by following the breadth for search algorithm 
      */
     public Path bfsSearch(String srcLabel, String dstLabel) {
-
+        
         // declaring path p as null
         Path p =  null;
 
@@ -285,21 +277,22 @@ public class MyGraphApp {
         }
         return p;
     }
-
+   
     /**
-     * dfsSearch method: returns the path for dfs
+     * dfsSearch method : it search for the path from srcLabel 
+     * to dstLabel by following the depth for search algorithm 
      */
     public Path dfsSearch(String srcLabel, String dstLabel) {
-
+        
         // declaring path p as null
         Path p =  null;
-
+        
         // declaring the visited nodes
         Set<String> visited = new HashSet<>();
 
         // declaring the map/dict to hold the parent -> connecting path
         HashMap<String, String> parent = new HashMap<>();
-
+        
         // declaring the stack to hold unexplored nodes
         Stack<String> stack = new Stack<>();
 
@@ -340,27 +333,5 @@ public class MyGraphApp {
         }
         return p;
     }
-
-    /**
-     * GraphSearch method : returns the path between the srcLabel to dstLabel via given algorithm """
-     */
-    public Path GraphSearch(String srcLabel, String dstLabel, Algorithm algo) {
-        boolean status1 = directedGraph.containsVertex(srcLabel);
-        boolean status2 = directedGraph.containsVertex(dstLabel);
-        // If both source and destination node is found in graph,
-        if (status1 == true & status2 == true) {
-            // check the path by BFS
-            if (algo == Algorithm.BFS ) {
-                return bfsSearch(srcLabel, dstLabel);
-            }
-            // check the path by DFS
-            else if (algo == Algorithm.DFS ) {
-                return dfsSearch(srcLabel, dstLabel);
-            }
-            else {
-                return null;
-            }
-        }
-        return null;
-    }
 }
+
