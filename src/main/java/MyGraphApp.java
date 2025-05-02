@@ -154,7 +154,7 @@ public class MyGraphApp {
         boolean status2 = graph.containNode(dstLabel);
         
         // initializing the template typei with bfs
-        SearchTemplate stype = new BFSTemplate();
+        //SearchTemplate stype = new BFSTemplate();
 
         // If both source and destination node is found in graph,
         if (status1 == true & status2 == true) {
@@ -162,28 +162,28 @@ public class MyGraphApp {
             // check the path by BFS
             if (algo == Algorithm.BFS ) {
                 // Template Pattern
-                return stype.searchPath(graph, srcLabel, dstLabel);
+                //return stype.searchPath(graph, srcLabel, dstLabel);
                 
                 // Strategy Pattern
-                //return search(new BFSStrategy(graph, srcLabel, dstLabel));
+                return search(new BFSStrategy(graph, srcLabel, dstLabel));
             }
             // check the path by DFS
             else if (algo == Algorithm.DFS ) {
                 // Template Pattern
-                stype = new DFSTemplate(); 
-                return stype.searchPath(graph, srcLabel, dstLabel);
+                //stype = new DFSTemplate(); 
+                //return stype.searchPath(graph, srcLabel, dstLabel);
                 
                 // Strategy Pattern
-                //return search(new DFSStrategy(graph, srcLabel, dstLabel));
+                return search(new DFSStrategy(graph, srcLabel, dstLabel));
             }
             // check the path by RWS 
             else if (algo == Algorithm.RWS ) {
                 // Template Pattern
-                stype = new RWSTemplate(); 
-                return stype.searchPath(graph, srcLabel, dstLabel);
+                //stype = new RWSTemplate(); 
+                //return stype.searchPath(graph, srcLabel, dstLabel);
                 
                 // Strategy Pattern
-                //return search(new RWSStrategy(graph, srcLabel, dstLabel));
+                return search(new RWSStrategy(graph, srcLabel, dstLabel));
             }
             else {
                 return null;
