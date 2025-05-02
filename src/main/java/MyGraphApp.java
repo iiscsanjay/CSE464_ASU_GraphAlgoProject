@@ -138,7 +138,12 @@ public class MyGraphApp {
     public void outputGraphics(String path, String format ) throws IOException {
         graphio.writeImageFile(graph, path, format);
     }
-    
+  
+    // Calling search according to strategy
+    public Path search(SearchStrategy searchMethod) {
+        return searchMethod.searchPath();
+    }
+
     
     /**
      * GraphSearch method : returns the path between the srcLabel to dstLabel via given algorithm """
@@ -149,19 +154,27 @@ public class MyGraphApp {
         boolean status2 = graph.containNode(dstLabel);
         
         // initializing the template typei with bfs
-        SearchTemplate stype = new BFSTemplate();
+        //SearchTemplate stype = new BFSTemplate();
 
         // If both source and destination node is found in graph,
         if (status1 == true & status2 == true) {
 
             // check the path by BFS
             if (algo == Algorithm.BFS ) {
-                return stype.searchPath(graph, srcLabel, dstLabel);
+                // Template Pattern
+                //return stype.searchPath(graph, srcLabel, dstLabel);
+                
+                // Strategy Pattern
+                return search(new BFSStrategy(graph, srcLabel, dstLabel));
             }
             // check the path by DFS
             else if (algo == Algorithm.DFS ) {
-                stype = new DFSTemplate(); 
-                return stype.searchPath(graph, srcLabel, dstLabel);
+                // Template Pattern
+                //stype = new DFSTemplate(); 
+                //return stype.searchPath(graph, srcLabel, dstLabel);
+                
+                // Strategy Pattern
+                return search(new DFSStrategy(graph, srcLabel, dstLabel));
             }
             else {
                 return null;

@@ -1,0 +1,73 @@
+import java.io.*;
+import java.util.*;
+import org.jgrapht.graph.*;
+
+public class DFSStrategy implements SearchStrategy {
+    
+    private String srcLabel = "";
+    private String dstLabel = "";
+    private MyGraph graph = null;
+
+    public DFSStrategy(MyGraph graph, String srcLabel, String dstLabel ){
+        this.srcLabel = srcLabel;
+        this.dstLabel = dstLabel;
+        this.graph = graph;
+    }
+
+    /**
+     * searchPath method : it search for the path from srcLabel 
+     * to dstLabel by following the depth for search algorithm 
+     */
+    @Override 
+    public Path searchPath() {
+        
+        // declaring path p as null
+        Path p =  null;
+        
+        // declaring the visited nodes
+        Set<String> visited = new HashSet<>();
+
+        // declaring the map/dict to hold the parent -> connecting path
+        HashMap<String, String> parent = new HashMap<>();
+        
+        // declaring the stack to hold unexplored nodes
+        Stack<String> stack = new Stack<>();
+
+        // Initializing the stack, visited nodes and parents dictionary for path
+        stack.push(srcLabel);
+        parent.put(srcLabel,null);
+
+        //Running the loop until stack becomes empty
+        while (!stack.isEmpty()) {
+
+            // removing the top element
+            String currentNode = stack.pop();
+
+            visited.add(currentNode);
+
+            // Checks if currentNode is the destination node
+            //System.out.println("Exploring Node: " + currentNode);
+            if (currentNode.equals(dstLabel)) {
+                p = new Path();
+                while (currentNode != null) {
+                    p.addNode(currentNode);
+                    currentNode = parent.get(currentNode);
+                }
+                return p;
+            }
+
+            for(DefaultEdge e : graph.getEdgeSet() ) {
+                String source = graph.getEdgeSource(e);
+                String neighbor  = graph.getEdgeTarget(e);
+                if (source.equals(currentNode)) {
+                    //System.out.println(source + "=>" + neighbor );
+                    if (! visited.contains(neighbor)) {
+                        stack.push(neighbor);
+                        parent.put(neighbor, currentNode);
+                    }
+                }
+            }
+        }
+        return p;
+    }
+}
