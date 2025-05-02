@@ -12,10 +12,14 @@ public class MyGraphApp {
     public MyGraphApp() {
         directedGraph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
     }
- public void parseGraph(String filepath) {
-       
+    
+    // Feature 1 : parseGraph, toString, outputGraph
+    
+    public void parseGraph(String filepath) {
+    
+        // Read the input dot file as string 
         StringBuilder contentBuilder = new StringBuilder();
-
+    
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) 
@@ -26,6 +30,7 @@ public class MyGraphApp {
             e.printStackTrace();
         }
 
+        // Generate the DOTImporter object
         DOTImporter<String, DefaultEdge> dotImporter = new DOTImporter<>();
         dotImporter.setVertexFactory(label -> label);
 
@@ -34,6 +39,8 @@ public class MyGraphApp {
             Map<String, Attribute> map = attrs.computeIfAbsent(p.getFirst(), k -> new HashMap<>());
             map.put(p.getSecond(), a);
         });
+
+        // update the directedGraph by using the dot file string read in contentBuilder
         dotImporter.importGraph(directedGraph, new StringReader(contentBuilder.toString()));
        
     }
@@ -78,6 +85,22 @@ public class MyGraphApp {
             // Report
         } finally {
            try {writer.close();} catch (Exception ex) {/*ignore*/}
+        }
+    }
+
+    // Feature 2 : addNode, addNodes
+    
+    public boolean addNode(String label) {
+        boolean status = directedGraph.addVertex(label);
+        return status;
+    }
+
+    public void addNodes(String [] label) {
+        for(String nv : label ){
+            boolean status = addNode(nv);
+            if (!status) {
+                System.out.println("Label " + nv + " already exists in Graph");
+            }
         }
     }
 }
