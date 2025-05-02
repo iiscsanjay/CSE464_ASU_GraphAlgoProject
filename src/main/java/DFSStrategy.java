@@ -21,8 +21,11 @@ public class DFSStrategy implements SearchStrategy {
     @Override 
     public Path searchPath() {
         
+        // Printing the Search Type 
+        System.out.println("Depth First Search: from " + srcLabel + " => " + dstLabel);
+        
         // declaring path p as null
-        Path p =  null;
+        Path p =  new Path();
         
         // declaring the visited nodes
         Set<String> visited = new HashSet<>();
@@ -44,15 +47,19 @@ public class DFSStrategy implements SearchStrategy {
             String currentNode = stack.pop();
 
             visited.add(currentNode);
+            
+            p.addNodeInLast(currentNode);
+            //System.out.println("Exploring Node: " + currentNode);
+            System.out.println("visiting " + p.getPath() );
 
             // Checks if currentNode is the destination node
-            //System.out.println("Exploring Node: " + currentNode);
             if (currentNode.equals(dstLabel)) {
                 p = new Path();
                 while (currentNode != null) {
                     p.addNode(currentNode);
                     currentNode = parent.get(currentNode);
                 }
+                System.out.println(p);
                 return p;
             }
 
@@ -68,6 +75,6 @@ public class DFSStrategy implements SearchStrategy {
                 }
             }
         }
-        return p;
+        return null;
     }
 }

@@ -11,8 +11,11 @@ public class BFSTemplate extends SearchTemplate {
     @Override 
     public Path searchPath(MyGraph graph, String srcLabel, String dstLabel){
         
+        // Printing the Search Type 
+        System.out.println("Breadth First Search: from " + srcLabel + " => " + dstLabel);
+        
         // declaring path p as null
-        Path p =  null;
+        Path p =  new Path();
 
         // declaring the visited nodes
         Set<String> visited = new HashSet<>();
@@ -33,8 +36,11 @@ public class BFSTemplate extends SearchTemplate {
 
             // removing the front element
             String currentNode = queue.remove();
-
+            
+            p.addNodeInLast(currentNode);
             //System.out.println("Exploring Node: " + currentNode);
+
+            System.out.println("visiting " + p.getPath() );
 
             // Checks if currentNode is the destination node
             if (currentNode.equals(dstLabel)) {
@@ -43,7 +49,7 @@ public class BFSTemplate extends SearchTemplate {
                     p.addNode(currentNode);
                     currentNode = parent.get(currentNode);
                 }
-                //System.out.println(p.getPath());
+                System.out.println(p);
                 return p;
             }
 
@@ -60,6 +66,6 @@ public class BFSTemplate extends SearchTemplate {
                 }
             }
         }
-        return p;
+        return null;
     }
 }

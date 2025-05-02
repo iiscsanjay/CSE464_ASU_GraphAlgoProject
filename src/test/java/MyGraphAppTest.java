@@ -215,7 +215,6 @@ public class MyGraphAppTest {
         String expectedPath = "Path: a->e->g->h";
         Path p = mg.GraphSearch(srcLabel,dstLabel,MyGraphApp.Algorithm.DFS);
         String resultPath =  p.getPath();
-        System.out.println(resultPath);
         assertEquals(expectedPath, resultPath);
     }
 
@@ -230,4 +229,53 @@ public class MyGraphAppTest {
         Path p = mg.GraphSearch(srcLabel,dstLabel, MyGraphApp.Algorithm.DFS);
         assertEquals(p,null);
     }
+
+
+    @Test
+    public void testGraphSearchRWSPositive1Case() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "a";
+        String dstLabel = "c";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        for(int i=0; i<5; i++) {
+            System.out.println("Iteration[" + i + "]:");
+            Path p = mg.GraphSearch(srcLabel,dstLabel,MyGraphApp.Algorithm.RWS);
+            String resultPath =  p.getPath();
+            String expectedPath = "Path: a->b->c";
+            assertEquals(expectedPath, resultPath);
+        }
+    }
+    
+    @Test
+    public void testGraphSearchRWSPositive2Case() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "b";
+        String dstLabel = "g";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        for(int i=0; i<5; i++) {
+            System.out.println("Iteration[" + i + "]:");
+            Path p = mg.GraphSearch(srcLabel,dstLabel,MyGraphApp.Algorithm.RWS);
+            String resultPath =  p.getPath();
+            String expectedPath = "Path: b->c->d->a->e->g";
+            assertEquals(expectedPath, resultPath);
+        }
+    }
+    
+    @Test
+    public void testGraphSearchRWSNegativeCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "g";
+        String dstLabel = "e";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        for(int i=0; i<5; i++) {
+            System.out.println("Iteration[" + i + "]:");
+            Path p = mg.GraphSearch(srcLabel,dstLabel,MyGraphApp.Algorithm.RWS);
+            assertEquals(p,null);
+        }
+    }
+    
+
 }

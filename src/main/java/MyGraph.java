@@ -2,13 +2,14 @@ import java.io.*;
 import java.util.*;
 import java.lang.ProcessBuilder;
 import org.jgrapht.*;
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.*;
 import org.jgrapht.nio.*;
 import org.jgrapht.nio.dot.*;
 import org.jgrapht.util.*;
 
 /**
- * @author: iiscsanjay
+ * @author : Sunanada Tummala
 */
 
 public class MyGraph {
@@ -189,9 +190,16 @@ public class MyGraph {
     public String getEdgeTarget(DefaultEdge e) {
         return directedGraph.getEdgeTarget(e);
     }
-    
+   
+    public DefaultEdge getEdge(String source, String target) {
+        return directedGraph.getEdge(source, target);
+    }
+
     public Set<DefaultEdge> getEdgeSet() {
         return directedGraph.edgeSet();
     }
-
+    
+    public List<String> getSuccessorNeighbors(String source) {
+        return Graphs.successorListOf(directedGraph, source);
+    }
 }
