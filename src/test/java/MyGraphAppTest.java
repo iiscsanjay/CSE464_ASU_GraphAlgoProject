@@ -84,5 +84,26 @@ public class MyGraphAppTest {
         boolean result = mg.addEdge("c", "e");
         assertEquals(expected, result);
     }
+    
+    @Test
+    public void testOutputDotGraph() throws IOException{
+        String inputFile = "input.dot";
+        String outputFile = "output.dot";
+        MyGraphApp oldG = new MyGraphApp();
+        MyGraphApp newG = new MyGraphApp();
+        oldG.parseGraph(inputFile);
+        oldG.outputDOTGraph(outputFile);
+        newG.parseGraph(outputFile);
+        assertEquals(oldG.toString(), newG.toString());
+    }
 
+    @Test
+    public void testOutputGraphics() throws IOException{
+        String inputFile = "input.dot";
+        String path = "output";
+        String format = "png";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        mg.outputGraphics(path, format);
+    }
 }

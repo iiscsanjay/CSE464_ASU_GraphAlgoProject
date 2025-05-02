@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.lang.ProcessBuilder;
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
 import org.jgrapht.nio.*;
@@ -68,9 +69,9 @@ public class MyGraphApp {
         
         // Printing the Each Edge and Direction
         for(DefaultEdge e : directedGraph.edgeSet() ) {
-            String source = directedGraph.getEdgeSource(e);
-            String target = directedGraph.getEdgeTarget(e);
-            currentLine = "\tEdge : " + source + " -> " + target + "\n";
+            String srcLabel = directedGraph.getEdgeSource(e);
+            String dstLabel = directedGraph.getEdgeTarget(e);
+            currentLine = "\tEdge : " + srcLabel + " -> " + dstLabel + "\n";
             graphBuilder.append(currentLine);
         }
         return  graphBuilder.toString(); 
@@ -104,17 +105,40 @@ public class MyGraphApp {
         }
     }
 
-
     // Feature 3: Adding edges from the imported graph (10 points)
-    public boolean addEdge(String source, String target) {
-        boolean status = false;
-        if (directedGraph.containsVertex(source) && directedGraph.containsVertex(target) ) {
-            DefaultEdge e = directedGraph.addEdge(source, target);
+    public boolean addEdge(String srcLabel, String dstLabel) {
+        boolean status = false; 
+        if (directedGraph.containsVertex(srcLabel) && directedGraph.containsVertex(dstLabel) ) {
+            DefaultEdge e = directedGraph.addEdge(srcLabel, dstLabel);
             if (e == null)
                 return false;
             else
                 return true;
         }
         return status;
+    }
+
+    // Feature 4 :  outputDOTGraph and : outputGraphics(String path, String format)
+    public void outputDOTGraph(String path) throws IOException{
+
+        // Initialize the DOTExporter object
+        DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>(v -> v.toString());
+        
+        try {
+            exporter.exportGraph(directedGraph, new FileWriter(path));
+        }catch (IOException e){
+        
+        }
+    }
+
+    public void outputGraphics(String path, String format ) throws IOException {
+        String inputFile = "output.dot";
+        outputDOTGraph(inputFile);
+        String outputFile = path +"." +  format;
+        try {
+            ProcessBuilder pb = new ProcessBuilder("dot", "-Tpng", inputFile, "-o" , outputFile);
+            Process p = pb.start();
+        }catch (IOException e){
+        }
     }
 }
