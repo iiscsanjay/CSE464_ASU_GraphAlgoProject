@@ -1,28 +1,47 @@
 import java.util.LinkedList;
 import java.util.Iterator;
 
-// Declaring Path Class
-public class Path {
+/**
+ * @author: Sanjay Kumar 
+ * @course: CSE464
+ */
 
+public class Path {
+    /**
+     * Declaring Path Class for storing path from src to dst node
+    */
+    
     // linkedlist to store the nodes in the path
     private LinkedList<String> nodes;
 
-    // Default Constructor
+
+    /**
+     * Default Constructor: Constructor to initialize the linkedlist to store nodes 
+    */
     public Path() {
         nodes = new LinkedList<String> ();
     }
-    
-    // addNode method: adds the input node into the path
+
+
+    /**
+     * addNode method: adds the input node into the path
+    */
     public void addNode(String label) {
         nodes.addFirst(label);
     }
-    
-  // removeNode method: removes the input node from the path
+
+
+    /** 
+     * removeNode method: removes the input node from the path
+    */
     public boolean removeNode(String label) {
         return nodes.remove(label);
     }
     
-    // removeNodes method: removes the all the nodes from path
+
+    /**
+     * removeNodes method: removes the all the nodes from path
+    */
     public void removeNodes() {
         Iterator<String> it = nodes.iterator();
         System.out.println("Removing Nodes: ");
@@ -37,10 +56,24 @@ public class Path {
         }
     }
 
+
+    /**
+     * toString method: returns the string to the Path class object
+    */
+    @Override
+    public String toString() {
+        return getPath();
+    }
+
+
+    /**
+     * getPath method : generates the path string and returns
+    */
     public String getPath() {
         Iterator<String> it = nodes.iterator();
-        String path = "Path: ";
+        String path = "";
         if (it.hasNext()){
+            path += "Path: ";
             path += it.next();
             while(it.hasNext()) {
                 path += "->" + it.next();
@@ -49,15 +82,14 @@ public class Path {
         return path;
     }
 
+    
+    /**
+     * displayPath method: prints the path of the graph
+    */
     public void displayPath() {
-        Iterator<String> it = nodes.iterator();
-        if (it.hasNext()){
-            System.out.print("Path: ");
-            System.out.print(it.next());
-            while(it.hasNext()) {
-                System.out.print("->" + it.next());
-            }
-            System.out.println("");
+        String path = getPath();
+        if (path.isEmpty() == true) {
+            System.out.println(path);
         }
         else {
             System.out.println("No Path Found!");
