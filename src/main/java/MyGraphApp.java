@@ -10,6 +10,15 @@ import org.jgrapht.util.*;
 public class MyGraphApp {
     private Graph<String, DefaultEdge> directedGraph;
     
+    /*
+     * Algorithm enum variable for selecting the algorithm
+     */
+    enum Algorithm{
+        BFS,
+        DFS,
+        RWS
+    }
+
     public MyGraphApp() {
         directedGraph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
     }
@@ -170,9 +179,9 @@ public class MyGraphApp {
         return status;
     }
     
-    // Calling the Breadth for Search Algorithms
-    public Path GraphSearch(String srcLabel, String dstLabel) {
-        
+    // Calling the Search Algorithm
+    public Path GraphSearch(String srcLabel, String dstLabel, Algorithm algo) {
+
         Path p = null;
 
         boolean status1 = directedGraph.containsVertex(srcLabel);
@@ -180,56 +189,108 @@ public class MyGraphApp {
         
         // If both source and destination node is found in graph, then go for BFS search
         if (status1 == true & status2 == true) {
+        
+            if (algo == Algorithm.BFS ) {
 
-            // declaring the visited nodes
-            Set<String> visited = new HashSet<>();
+                // declaring the visited nodes
+                Set<String> visited = new HashSet<>();
 
-            // declaring the queue to hold unexplored nodes
-            Queue<String> queue = new LinkedList<>();
+                // declaring the queue to hold unexplored nodes
+                Queue<String> queue = new LinkedList<>();
 
-            // declaring the map/dict to hold the parent -> connecting path
-            HashMap<String, String> parent = new HashMap<>();
+                // declaring the map/dict to hold the parent -> connecting path
+                HashMap<String, String> parent = new HashMap<>();
 
-            // Initializing the queue, visited nodes and parents dictionary for path
-            queue.add(srcLabel);
-            visited.add(srcLabel);
-            parent.put(srcLabel,null);
+                // Initializing the queue, visited nodes and parents dictionary for path
+                queue.add(srcLabel);
+                visited.add(srcLabel);
+                parent.put(srcLabel,null);
 
-            //Running the loop until queue becomes empty
-            while (!queue.isEmpty()) {
+                //Running the loop until queue becomes empty
+                while (!queue.isEmpty()) {
 
-                // removing the front element
-                String currentNode = queue.remove();
-                
-                //System.out.println("Exploring Node: " + currentNode);
-                
-                if (currentNode.equals(dstLabel)) {
-                    p = new Path();
-                    while (currentNode != null) {
-                        p.addNode(currentNode);
-                        currentNode = parent.get(currentNode);
+                    // removing the front element
+                    String currentNode = queue.remove();
+                    
+                    //System.out.println("Exploring Node: " + currentNode);
+                    
+                    if (currentNode.equals(dstLabel)) {
+                        p = new Path();
+                        while (currentNode != null) {
+                            p.addNode(currentNode);
+                            currentNode = parent.get(currentNode);
+                        }
+                        return p;
                     }
-                    return p;
-                }
 
-                for(DefaultEdge e : directedGraph.edgeSet() ) {
-                    String source = directedGraph.getEdgeSource(e);
-                    String neighbor  = directedGraph.getEdgeTarget(e);
-                    if (source.equals(currentNode)) {
-                        //System.out.println(source + "->" + neighbor + "=>" +  currentNode);
-                        if (! visited.contains(neighbor)) {
-                            visited.add(neighbor);
-                            queue.add(neighbor);
-                            parent.put(neighbor, currentNode);
+                    for(DefaultEdge e : directedGraph.edgeSet() ) {
+                        String source = directedGraph.getEdgeSource(e);
+                        String neighbor  = directedGraph.getEdgeTarget(e);
+                        if (source.equals(currentNode)) {
+                            //System.out.println(source + "->" + neighbor + "=>" +  currentNode);
+                            if (! visited.contains(neighbor)) {
+                                visited.add(neighbor);
+                                queue.add(neighbor);
+                                parent.put(neighbor, currentNode);
+                            }
                         }
                     }
                 }
+                return p;
+            } 
+            else if (algo == Algorithm.DFS ) {
+
+                // declaring the visited nodes
+                Set<String> visited = new HashSet<>();
+
+                // declaring the stack to hold unexplored nodes
+                Stack<String> stack = new Stack<>();
+
+                // declaring the map/dict to hold the parent -> connecting path
+                HashMap<String, String> parent = new HashMap<>();
+
+                // Initializing the stack, visited nodes and parents dictionary for path
+                stack.push(srcLabel);
+                parent.put(srcLabel,null);
+
+                //Running the loop until stack becomes empty
+                while (!stack.isEmpty()) {
+
+                    // removing the top element
+                    String currentNode = stack.pop();
+
+                    visited.add(currentNode);
+
+                    //System.out.println("Exploring Node: " + currentNode);
+                    if (currentNode.equals(dstLabel)) {
+                        p = new Path();
+                        while (currentNode != null) {
+                            p.addNode(currentNode);
+                            currentNode = parent.get(currentNode);
+                        }
+                        break;
+                    }
+
+                    for(DefaultEdge e : directedGraph.edgeSet() ) {
+                        String source = directedGraph.getEdgeSource(e);
+                        String neighbor  = directedGraph.getEdgeTarget(e);
+                        if (source.equals(currentNode)) {
+                            //System.out.println(source + "=>" + neighbor );
+                            if (! visited.contains(neighbor)) {
+                                stack.push(neighbor);
+                                parent.put(neighbor, currentNode);
+                            }
+                        }
+                    }
+                }
+                return p;
+            }
+            else {
+                return p;
             }
         }
         else {
-            System.out.println("Not Found");
+            return p;
         }
-        return p;
     }
-
 }

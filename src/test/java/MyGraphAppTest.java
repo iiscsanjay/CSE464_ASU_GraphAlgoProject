@@ -180,27 +180,52 @@ public class MyGraphAppTest {
     }
     
     @Test
-    public void testGraphSearchPositiveCase() throws IOException {
+    public void testBFSSearchPositiveCase() throws IOException {
         String inputFile = "input.dot";
         String srcLabel = "a";
         String dstLabel = "h";
         MyGraphApp mg = new MyGraphApp();
         mg.parseGraph(inputFile);
         String expectedPath = "Path: a->e->f->h";
-        Path p = mg.GraphSearch(srcLabel,dstLabel);
+        Path p = mg.GraphSearch(srcLabel,dstLabel, MyGraphApp.Algorithm.BFS);
         String resultPath =  p.getPath();
         assertEquals(expectedPath, resultPath);
     }
-
+    
     @Test
-    public void testGraphSearchNegativeCase() throws IOException {
+    public void testBFSSearchNegativeCase() throws IOException {
         String inputFile = "input.dot";
         String srcLabel = "g";
         String dstLabel = "e";
         MyGraphApp mg = new MyGraphApp();
         mg.parseGraph(inputFile);
-        Path p = mg.GraphSearch(srcLabel,dstLabel);
+        Path p = mg.GraphSearch(srcLabel,dstLabel, MyGraphApp.Algorithm.BFS);
         assertEquals(p,null);
     }
+    
+    @Test
+    public void testDFSSearchPositiveCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "a";
+        String dstLabel = "h";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        String expectedPath = "Path: a->e->g->h";
+        Path p = mg.GraphSearch(srcLabel,dstLabel,MyGraphApp.Algorithm.DFS);
+        String resultPath =  p.getPath();
+        System.out.println(resultPath);
+        assertEquals(expectedPath, resultPath);
+    }
 
+
+    @Test
+    public void testDFSSearchNegativeCase() throws IOException {
+        String inputFile = "input.dot";
+        String srcLabel = "g";
+        String dstLabel = "e";
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        Path p = mg.GraphSearch(srcLabel,dstLabel, MyGraphApp.Algorithm.DFS);
+        assertEquals(p,null);
+    }
 }
