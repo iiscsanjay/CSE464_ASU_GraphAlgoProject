@@ -32,10 +32,9 @@ public class MyGraphAppTest {
     @Test
     public void testAddNodeNegativeCase() throws IOException{
         String inputFile = "input.dot";
-        boolean expected;
+        boolean expected = false;
         MyGraphApp mg = new MyGraphApp();
         mg.parseGraph(inputFile);
-        expected = false;
         boolean result = mg.addNode("a");
         assertEquals(expected, result);
     }
@@ -43,15 +42,12 @@ public class MyGraphAppTest {
     @Test
     public void testAddNodePositiveCase() throws IOException{
         String inputFile = "input.dot";
-        boolean expected;
+        boolean expected = true;
         MyGraphApp mg = new MyGraphApp();
         mg.parseGraph(inputFile);
-        expected = true;
         boolean result = mg.addNode("i");
         assertEquals(expected, result);
     }
-
-
 
     @Test
     public void testAddNodes() throws IOException{
@@ -67,4 +63,26 @@ public class MyGraphAppTest {
         String expected = readFileAsString(expectedFile);
         assertEquals(expected, output);
     }
+
+
+    @Test
+    public void testAddEdgeNegativeCase() throws IOException{
+        String inputFile = "input.dot";
+        boolean expected = false;
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean result = mg.addEdge("c", "d");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testAddEdgePositiveCase() throws IOException{
+        String inputFile = "input.dot";
+        boolean expected = true;
+        MyGraphApp mg = new MyGraphApp();
+        mg.parseGraph(inputFile);
+        boolean result = mg.addEdge("c", "e");
+        assertEquals(expected, result);
+    }
+
 }

@@ -103,4 +103,18 @@ public class MyGraphApp {
             }
         }
     }
+
+
+    // Feature 3: Adding edges from the imported graph (10 points)
+    public boolean addEdge(String source, String target) {
+        boolean status = false;
+        if (directedGraph.containsVertex(source) && directedGraph.containsVertex(target) ) {
+            DefaultEdge e = directedGraph.addEdge(source, target);
+            if (e == null)
+                return false;
+            else
+                return true;
+        }
+        return status;
+    }
 }
